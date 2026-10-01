@@ -61,7 +61,6 @@
             return false;
         }
 
-        // Check if playback manager has an item or audio is loaded
         if (window.playbackManager && typeof playbackManager.currentItem === 'function') {
             const item = playbackManager.currentItem();
             if (item) return true;
@@ -363,14 +362,13 @@
         let btn = document.getElementById('embyBpmBtn');
         let panel = document.getElementById('embyBpmPanel');
 
-        // If player bar is not active, hide everything and NEVER float
+        // If player bar is not active, hide everything
         if (!active) {
             if (btn) {
                 btn.style.display = 'none';
             }
             if (state.panelOpen) {
-                state.panelOpen = false;
-                if (panel) panel.style.display = 'none';
+                togglePanel(false);
             }
             return;
         }
@@ -388,12 +386,12 @@
             btn = document.createElement('button');
             btn.id = 'embyBpmBtn';
             btn.setAttribute('is', 'paper-icon-button-light');
-            btn.className = 'nowPlayingBar-hidetv toggleButton mediaButton paper-icon-button-light emby-bpm-player-btn';
+            btn.className = 'nowPlayingBar-hidetv mediaButton md-icon autortl paper-icon-button-light emby-bpm-player-btn';
             btn.type = 'button';
             btn.style.padding = '.24em';
             btn.title = 'Playback Speed & BPM (100%)';
             btn.setAttribute('aria-label', 'Playback Speed & BPM');
-            btn.innerHTML = `<i style="font-size:inherit;padding:.1em;" class="md-icon toggleButtonIcon" id="embyBpmIcon">speed</i><span class="emby-bpm-badge" id="embyBpmBtnLabel" style="display:none;"></span>`;
+            btn.innerHTML = `<i style="font-size:inherit;padding:.1em;background:transparent;" class="md-icon autortl" id="embyBpmIcon">speed</i><span class="emby-bpm-badge" id="embyBpmBtnLabel" style="display:none;"></span>`;
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 togglePanel();
@@ -497,7 +495,10 @@
             document.body.appendChild(panel);
 
             // Bind Events
-            document.getElementById('embyBpmClose').addEventListener('click', togglePanel);
+            document.getElementById('embyBpmClose').addEventListener('click', (e) => {
+                e.stopPropagation();
+                togglePanel(false);
+            });
             
             const slider = document.getElementById('embyBpmSlider');
             slider.addEventListener('input', (e) => {
@@ -536,19 +537,29 @@
         }
     }
 
-    function togglePanel() {
+    function togglePanel(forceOpen) {
+        const panel = document.getElementById('embyBpmPanel');
+        if (!panel) return;
+
+        if (typeof forceOpen === 'boolean') {
+            state.panelOpen = forceOpen;
+        } else {
+            state.panelOpen = !state.panelOpen;
+        }
+
+        panel.style.display = state.panelOpen ? 'flex' : 'none';
+        updateUI();
+    }
+
+    // Close panel when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!state.panelOpen) return;
         const panel = document.getElementById('embyBpmPanel');
         const btn = document.getElementById('embyBpmBtn');
-        if (!panel) return;
-        state.panelOpen = !state.panelOpen;
-        panel.style.display = state.panelOpen ? 'flex' : 'none';
-        if (btn) {
-            btn.classList.toggle('toggleButton-active', state.panelOpen || state.rate !== 1.0 || state.semitones !== 0);
+        if (panel && !panel.contains(e.target) && btn && !btn.contains(e.target)) {
+            togglePanel(false);
         }
-        if (state.panelOpen) {
-            updateUI();
-        }
-    }
+    });
 
     function updateUI() {
         const isModified = (state.rate !== 1.0 || state.semitones !== 0);
@@ -560,12 +571,22 @@
 
         if (btn) {
             btn.title = `Playback Speed & BPM (${percentStr})`;
-            btn.classList.toggle('toggleButton-active', state.panelOpen || isModified);
-            btn.classList.toggle('active', state.panelOpen || isModified);
+            btn.classList.remove('toggleButton-active', 'toggleButton', 'active');
+            if (isModified) {
+                btn.classList.add('bpm-modified');
+            } else {
+                btn.classList.remove('bpm-modified');
+            }
         }
 
         if (icon) {
-            icon.classList.toggle('toggleButtonIcon-active', state.panelOpen || isModified);
+            icon.classList.remove('toggleButtonIcon-active', 'toggleButtonIcon');
+            // When modified (e.g. 80%) or while panel is actively open, use Emby green accent
+            if (isModified || state.panelOpen) {
+                icon.style.color = 'hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%))';
+            } else {
+                icon.style.color = '';
+            }
         }
 
         if (btnLabel) {

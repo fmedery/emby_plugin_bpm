@@ -13,19 +13,26 @@
     line-height: 1 !important;
     box-sizing: border-box !important;
     cursor: pointer !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: inherit !important;
 }
 
-.emby-bpm-player-btn i.toggleButtonIcon {
+.emby-bpm-player-btn:focus {
+    outline: none !important;
+}
+
+.emby-bpm-player-btn i.md-icon {
     font-size: inherit !important;
     padding: 0.1em !important;
     vertical-align: middle !important;
     line-height: 1 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     transition: color 0.15s ease !important;
-}
-
-.emby-bpm-player-btn.toggleButton-active i.toggleButtonIcon,
-.emby-bpm-player-btn.active i.toggleButtonIcon {
-    color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%)) !important;
 }
 
 /* Discreet badge for altered speed (hidden at 100%) */
