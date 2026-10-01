@@ -1,67 +1,86 @@
-/* Emby BPM & Tempo Controller Stylesheet */
+/* =============================================================
+   Emby BPM & Tempo Controller
+   100% Native Emby Look & Feel (Material Symbols & Emby Themes)
+   ============================================================= */
 
-.emby-bpm-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #e0e0e0;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
-    padding: 3px 10px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    user-select: none;
-    margin: 0 4px;
-    vertical-align: middle;
+/* Player Bar Media Button */
+.emby-bpm-player-btn {
+    position: relative;
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    vertical-align: middle !important;
+    margin: 0 0.2em !important;
+    padding: 0.25em 0.4em !important;
+    min-width: 2.8em !important;
+    height: 3.2em !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0.4em !important;
+    color: inherit !important;
+    cursor: pointer !important;
+    transition: background-color 0.15s ease, color 0.15s ease !important;
+    user-select: none !important;
+    line-height: 1 !important;
 }
 
-.emby-bpm-btn:hover {
-    background: rgba(0, 164, 220, 0.25);
-    border-color: #00a4dc;
-    color: #ffffff;
-    box-shadow: 0 0 8px rgba(0, 164, 220, 0.4);
+.emby-bpm-player-btn:hover {
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.1) !important;
 }
 
-.emby-bpm-btn.active {
-    background: #00a4dc;
-    color: #ffffff;
-    border-color: #00a4dc;
+.emby-bpm-player-btn.active,
+.emby-bpm-player-btn:active {
+    color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%)) !important;
 }
 
-.emby-bpm-badge-active {
-    color: #00d284;
+.emby-bpm-player-btn .md-icon {
+    font-size: 1.45em !important;
+    line-height: 1 !important;
 }
 
-/* Modal Popover Panel */
+.emby-bpm-btn-badge {
+    font-size: 0.62em !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    margin-top: 0.2em !important;
+    opacity: 0.85 !important;
+    font-variant-numeric: tabular-nums !important;
+}
+
+.emby-bpm-player-btn.active .emby-bpm-btn-badge {
+    color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%)) !important;
+    opacity: 1 !important;
+}
+
+/* Modal Dialog Panel matching Emby native dialogs */
 .emby-bpm-panel {
     position: fixed;
-    bottom: 80px;
-    right: 25px;
-    width: 340px;
-    background: rgba(20, 20, 24, 0.94);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 14px;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.2);
-    color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    z-index: 999999;
-    padding: 16px 18px;
+    bottom: 4.8em;
+    right: 1.5em;
+    width: 350px;
+    max-width: calc(100vw - 3em);
+    background-color: hsla(var(--card-background-hue, 0), var(--card-background-saturation, 0%), var(--card-background-lightness, 14%), 0.96) !important;
+    -webkit-backdrop-filter: blur(2.5em) saturate(1.8) !important;
+    backdrop-filter: blur(2.5em) saturate(1.8) !important;
+    border: 1px solid hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.12) !important;
+    border-radius: 1.2em !important;
+    box-shadow: 0 0.8em 3em rgba(0, 0, 0, 0.65) !important;
+    color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), var(--theme-text-color-alpha, 0.95)) !important;
+    font-family: inherit !important;
+    z-index: 999999 !important;
+    padding: 1.2em 1.4em !important;
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    animation: embyBpmSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 1em;
+    box-sizing: border-box !important;
+    animation: embyDialogScaleUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) normal both;
 }
 
-@keyframes embyBpmSlideUp {
+@keyframes embyDialogScaleUp {
     from {
         opacity: 0;
-        transform: translateY(12px) scale(0.98);
+        transform: translateY(1.2em) scale(0.96);
     }
     to {
         opacity: 1;
@@ -69,265 +88,370 @@
     }
 }
 
+/* Header */
 .emby-bpm-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding-bottom: 10px;
+    border-bottom: 1px solid hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.08);
+    padding-bottom: 0.7em;
 }
 
 .emby-bpm-title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.3px;
     display: flex;
     align-items: center;
-    gap: 6px;
-    color: #ffffff;
+    gap: 0.5em;
+    font-size: 1.05em;
+    font-weight: 600;
+    margin: 0;
+}
+
+.emby-bpm-title .md-icon {
+    font-size: 1.3em;
+    color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
 }
 
 .emby-bpm-close {
     background: transparent;
     border: none;
-    color: #888888;
-    font-size: 1.2rem;
+    color: inherit;
+    opacity: 0.65;
     cursor: pointer;
-    line-height: 1;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 0.3em;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.15s, background-color 0.15s;
 }
 
 .emby-bpm-close:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.12);
 }
 
-/* Speed Display & Readout */
+.emby-bpm-close .md-icon {
+    font-size: 1.25em;
+}
+
+/* Readout Card */
 .emby-bpm-readout {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    background: rgba(0, 0, 0, 0.35);
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.05);
+    border: 1px solid hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.08);
+    padding: 0.8em 1em;
+    border-radius: 0.8em;
 }
 
 .emby-bpm-tempo-val {
-    font-size: 1.8rem;
+    font-size: 2em;
     font-weight: 800;
-    color: #00a4dc;
+    color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
+    line-height: 1;
     font-variant-numeric: tabular-nums;
 }
 
+.emby-bpm-multiplier {
+    font-size: 0.78em;
+    opacity: 0.7;
+    margin-top: 0.25em;
+}
+
 .emby-bpm-subval {
-    font-size: 0.85rem;
-    color: #aaaaaa;
     text-align: right;
 }
 
 .emby-bpm-effective {
+    font-size: 1.25em;
     font-weight: 700;
-    color: #00d284;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.2em;
 }
 
-/* Slider */
-.emby-bpm-slider-container {
+.emby-bpm-effective .md-icon {
+    font-size: 1.1em;
+    color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
+}
+
+.emby-bpm-original-text {
+    font-size: 0.74em;
+    opacity: 0.65;
+    margin-top: 0.25em;
+}
+
+/* Slider matching Emby native slider */
+.emby-bpm-slider-wrap {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 0.3em;
+    padding: 0.2em 0;
 }
 
 .emby-bpm-slider {
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.2);
+    height: 0.45em;
+    border-radius: 0.3em;
+    background: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.22);
     outline: none;
     cursor: pointer;
     transition: background 0.15s;
+    margin: 0.6em 0;
 }
 
 .emby-bpm-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 18px;
-    height: 18px;
+    width: 1.35em;
+    height: 1.35em;
     border-radius: 50%;
-    background: #00a4dc;
+    background: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
+    box-shadow: 0 0.1em 0.5em rgba(0, 0, 0, 0.5);
     cursor: pointer;
-    box-shadow: 0 0 6px rgba(0, 164, 220, 0.7);
-    transition: transform 0.1s;
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .emby-bpm-slider::-webkit-slider-thumb:hover {
     transform: scale(1.2);
 }
 
-/* Step & Preset Buttons */
-.emby-bpm-button-row {
+.emby-bpm-slider::-moz-range-thumb {
+    width: 1.35em;
+    height: 1.35em;
+    border-radius: 50%;
+    background: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
+    border: none;
+    box-shadow: 0 0.1em 0.5em rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+/* Step Buttons */
+.emby-bpm-step-row {
     display: flex;
-    gap: 6px;
+    gap: 0.4em;
     justify-content: space-between;
 }
 
-.emby-bpm-step-btn {
+.emby-bpm-btn-sub {
     flex: 1;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    border-radius: 6px;
-    padding: 6px 0;
-    font-size: 0.78rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15em;
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.08);
+    border: 1px solid hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.1);
+    color: inherit;
+    border-radius: 0.5em;
+    padding: 0.45em 0.2em;
+    font-size: 0.78em;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s;
-    text-align: center;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    line-height: 1;
 }
 
-.emby-bpm-step-btn:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: rgba(255, 255, 255, 0.25);
+.emby-bpm-btn-sub:hover {
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.18);
 }
 
-.emby-bpm-step-btn.reset {
-    background: rgba(0, 164, 220, 0.15);
-    color: #00a4dc;
-    border-color: rgba(0, 164, 220, 0.3);
+.emby-bpm-btn-sub.reset {
+    background-color: hsla(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%), 0.15);
+    border-color: hsla(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%), 0.35);
+    color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
 }
 
-.emby-bpm-step-btn.reset:hover {
-    background: #00a4dc;
+.emby-bpm-btn-sub.reset:hover {
+    background-color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
     color: #ffffff;
 }
 
-/* Presets Grid */
+.emby-bpm-btn-sub .md-icon {
+    font-size: 1.15em;
+}
+
+/* Presets Chips */
 .emby-bpm-presets {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 0.35em;
 }
 
-.emby-bpm-preset-pill {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 3px 8px;
-    font-size: 0.74rem;
-    color: #cccccc;
+.emby-bpm-chip {
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.07);
+    border: 1px solid hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.1);
+    border-radius: 1em;
+    padding: 0.3em 0.65em;
+    font-size: 0.74em;
+    font-weight: 600;
+    color: inherit;
+    opacity: 0.85;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    line-height: 1;
 }
 
-.emby-bpm-preset-pill:hover, .emby-bpm-preset-pill.active {
-    background: #00a4dc;
+.emby-bpm-chip:hover {
+    opacity: 1;
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.16);
+}
+
+.emby-bpm-chip.active {
+    background-color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
+    border-color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
     color: #ffffff;
-    border-color: #00a4dc;
+    opacity: 1;
 }
 
-/* Key Transposition / Pitch Section */
-.emby-bpm-pitch-section {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    padding: 10px;
+/* Pitch & Transposition Section */
+.emby-bpm-pitch-box {
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.04);
+    border: 1px solid hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.08);
+    border-radius: 0.8em;
+    padding: 0.7em 0.9em;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0.6em;
 }
 
 .emby-bpm-pitch-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    font-size: 0.8rem;
-    color: #bbbbbb;
+    justify-content: space-between;
+    font-size: 0.82em;
     font-weight: 600;
 }
 
-.emby-bpm-pitch-badge {
-    font-size: 0.72rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: rgba(0, 210, 132, 0.15);
-    color: #00d284;
-    border: 1px solid rgba(0, 210, 132, 0.3);
+.emby-bpm-pitch-header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
 }
 
-.emby-bpm-semitone-controls {
+.emby-bpm-pitch-header-title .md-icon {
+    font-size: 1.2em;
+    opacity: 0.8;
+}
+
+.emby-bpm-pitch-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    font-size: 0.72em;
+    font-weight: 700;
+    padding: 0.2em 0.5em;
+    border-radius: 0.4em;
+    background-color: hsla(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%), 0.15);
+    color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
+    border: 1px solid hsla(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%), 0.3);
+}
+
+.emby-bpm-pitch-badge .md-icon {
+    font-size: 1.1em;
+}
+
+.emby-bpm-pitch-controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 4px;
+    gap: 0.4em;
 }
 
 .emby-bpm-semitone-val {
     font-weight: 700;
-    font-size: 0.9rem;
-    color: #ffffff;
-    min-width: 45px;
+    font-size: 0.9em;
+    min-width: 5em;
     text-align: center;
 }
 
-/* Tap Tempo & Target BPM Tool */
-.emby-bpm-tools {
+/* Tools: Tap Beat & Target BPM */
+.emby-bpm-tools-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.78rem;
+    justify-content: space-between;
+    gap: 0.6em;
+    font-size: 0.8em;
 }
 
 .emby-bpm-tap-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    border-radius: 6px;
-    padding: 5px 10px;
-    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.08);
+    border: 1px solid hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.12);
+    color: inherit;
+    border-radius: 0.5em;
+    padding: 0.5em 0.8em;
+    font-size: inherit;
     font-weight: 600;
-    transition: all 0.1s;
+    cursor: pointer;
+    transition: all 0.1s ease;
     user-select: none;
+    font-family: inherit;
+}
+
+.emby-bpm-tap-btn:hover {
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.16);
 }
 
 .emby-bpm-tap-btn:active {
-    transform: scale(0.95);
-    background: #00a4dc;
-}
-
-.emby-bpm-target-input {
-    width: 60px;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
+    transform: scale(0.96);
+    background-color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
     color: #ffffff;
-    padding: 4px 6px;
-    font-size: 0.78rem;
+}
+
+.emby-bpm-tap-btn .md-icon {
+    font-size: 1.2em;
+}
+
+.emby-bpm-target-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    opacity: 0.85;
+}
+
+.emby-bpm-input {
+    width: 3.8em;
+    background: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.08);
+    border: 1px solid hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.15);
+    border-radius: 0.4em;
+    color: inherit;
+    padding: 0.4em 0.5em;
+    font-size: 0.9em;
     text-align: center;
-}
-
-.emby-bpm-target-input:focus {
-    border-color: #00a4dc;
+    font-weight: 600;
     outline: none;
+    transition: border-color 0.15s;
+    font-family: inherit;
 }
 
-/* Footer / Hint */
+.emby-bpm-input:focus {
+    border-color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
+}
+
+/* Footer Shortcuts */
 .emby-bpm-footer {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    font-size: 0.7rem;
-    color: #666666;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding-top: 8px;
+    justify-content: space-between;
+    font-size: 0.72em;
+    opacity: 0.55;
+    border-top: 1px solid hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.08);
+    padding-top: 0.6em;
 }
 
 .emby-bpm-footer kbd {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-    padding: 1px 4px;
+    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.1);
+    border-radius: 0.3em;
+    padding: 0.15em 0.4em;
     font-family: inherit;
-    color: #aaaaaa;
+    font-weight: 600;
 }

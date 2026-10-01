@@ -1,6 +1,6 @@
 /**
  * Emby BPM & Tempo Controller
- * High-fidelity pitch-preserved tempo reduction, BPM calculation, and key transposition.
+ * 100% Native Emby Look & Feel (Material Symbols & Emby Themes)
  */
 (function () {
     'use strict';
@@ -26,7 +26,6 @@
         tapTimes: []
     };
 
-    // Load persisted rate
     try {
         const savedRate = localStorage.getItem('emby_bpm_rate');
         if (savedRate) {
@@ -55,7 +54,6 @@
     function applyAudioSettings(audio) {
         if (!audio) return;
 
-        // Strict pitch preservation
         if ('preservesPitch' in audio) {
             audio.preservesPitch = state.preservePitch;
         }
@@ -66,14 +64,11 @@
             audio.mozPreservesPitch = state.preservePitch;
         }
 
-        // Apply rate
         if (audio.playbackRate !== state.rate) {
             audio.playbackRate = state.rate;
         }
 
-        // Apply semitone pitch shift if Web Audio is enabled & semitones != 0
         applyPitchShift(audio);
-
         updateUI();
     }
 
@@ -106,7 +101,6 @@
                     mediaSourceNode.connect(pitchNode.input);
                     pitchNode.output.connect(audioContext.destination);
                 } catch (corsErr) {
-                    // If CORS prevents AudioContext routing, fallback safely without error
                     console.warn('[EmbyBPM] Web Audio Pitch Shifter bypassed (CORS/Stream restriction):', corsErr);
                     return;
                 }
@@ -122,7 +116,6 @@
     }
 
     function createPitchShiftNode(ctx) {
-        const bufferLen = 4096;
         const delay1 = ctx.createDelay(1.0);
         const delay2 = ctx.createDelay(1.0);
         const gain1 = ctx.createGain();
@@ -140,7 +133,7 @@
         let currentRatio = 1.0;
         let animationFrame = null;
         let phase = 0;
-        const period = 0.05; // 50ms window
+        const period = 0.05;
 
         function updateModulation() {
             if (state.semitones === 0) {
@@ -156,14 +149,12 @@
             const delta = (1.0 - currentRatio);
             phase = (now % period) / period;
 
-            // Two overlapping sawtooth delay lines
             const mod1 = (phase * period * delta + period) % period;
             const mod2 = ((phase + 0.5) % 1.0 * period * delta + period) % period;
 
             delay1.delayTime.setValueAtTime(Math.max(0.001, mod1), now);
             delay2.delayTime.setValueAtTime(Math.max(0.001, mod2), now);
 
-            // Cross-fading triangular envelope
             const g1 = Math.sin(phase * Math.PI);
             gain1.gain.setValueAtTime(Math.max(0, g1), now);
             gain2.gain.setValueAtTime(Math.max(0, 1 - g1), now);
@@ -220,7 +211,6 @@
                 state.currentTrackId = itemId;
                 state.trackBpm = null;
 
-                // Check localStorage cached BPM first
                 const cachedBpm = localStorage.getItem('emby_track_bpm_' + itemId);
                 if (cachedBpm) {
                     state.trackBpm = parseFloat(cachedBpm);
@@ -228,7 +218,6 @@
                     return;
                 }
 
-                // Query server API endpoint
                 if (window.ApiClient) {
                     try {
                         const url = ApiClient.getUrl('/Plugins/BpmTempo/TrackBpm/' + itemId);
@@ -239,7 +228,6 @@
                         }
                     } catch (e) { }
 
-                    // Also check Emby Item Tags
                     if (!state.trackBpm) {
                         try {
                             const userId = ApiClient.getCurrentUserId();
@@ -349,10 +337,12 @@
         if (!btn) {
             btn = document.createElement('button');
             btn.id = 'embyBpmBtn';
-            btn.className = 'emby-bpm-btn';
+            btn.setAttribute('is', 'paper-icon-button-light');
+            btn.className = 'paper-icon-button-light mediaButton md-icon emby-bpm-player-btn';
             btn.type = 'button';
-            btn.title = 'BPM & Tempo Controller (Pitch Preserved)';
-            btn.innerHTML = `<span style="font-size: 1rem;">🎵</span> <span id="embyBpmBtnLabel">${Math.round(state.rate * 100)}%</span>`;
+            btn.title = 'BPM & Playback Speed';
+            btn.setAttribute('aria-label', 'BPM & Playback Speed');
+            btn.innerHTML = `<i class="md-icon autortl">speed</i><span class="emby-bpm-btn-badge" id="embyBpmBtnLabel">${Math.round(state.rate * 100)}%</span>`;
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 togglePanel();
@@ -361,10 +351,6 @@
 
         if (bar) {
             if (btn.parentElement !== bar) {
-                btn.style.position = '';
-                btn.style.bottom = '';
-                btn.style.right = '';
-                btn.style.zIndex = '';
                 const vol = bar.querySelector('.nowPlayingBarVolumeSliderContainer') || bar.firstChild;
                 if (vol) {
                     bar.insertBefore(btn, vol);
@@ -390,54 +376,71 @@
 
             panel.innerHTML = `
                 <div class="emby-bpm-header">
-                    <div class="emby-bpm-title">
-                        <span>🎵 Tempo &amp; BPM Control</span>
-                    </div>
-                    <button class="emby-bpm-close" id="embyBpmClose">&times;</button>
+                    <h3 class="emby-bpm-title">
+                        <i class="md-icon autortl">speed</i>
+                        <span>Playback Speed &amp; BPM</span>
+                    </h3>
+                    <button class="emby-bpm-close" id="embyBpmClose" type="button" title="Close" aria-label="Close">
+                        <i class="md-icon">close</i>
+                    </button>
                 </div>
 
                 <div class="emby-bpm-readout">
                     <div>
                         <div class="emby-bpm-tempo-val" id="embyBpmTempoDisplay">100%</div>
-                        <div style="font-size: 0.75rem; color: #888888;" id="embyBpmMultiplierDisplay">1.00x speed</div>
+                        <div class="emby-bpm-multiplier" id="embyBpmMultiplierDisplay">1.00x normal speed</div>
                     </div>
                     <div class="emby-bpm-subval">
-                        <div id="embyBpmEffective" class="emby-bpm-effective">-- BPM</div>
-                        <div style="font-size: 0.72rem; color: #777777;" id="embyBpmOriginal">Track: Unknown</div>
+                        <div id="embyBpmEffective" class="emby-bpm-effective">
+                            <i class="md-icon">music_note</i>
+                            <span id="embyBpmEffectiveVal">-- BPM</span>
+                        </div>
+                        <div class="emby-bpm-original-text" id="embyBpmOriginal">Track: Unknown</div>
                     </div>
                 </div>
 
-                <div class="emby-bpm-slider-container">
+                <div class="emby-bpm-slider-wrap">
                     <input type="range" class="emby-bpm-slider" id="embyBpmSlider"
                            min="0.50" max="1.50" step="0.01" value="1.00" />
                 </div>
 
-                <div class="emby-bpm-button-row">
-                    <button class="emby-bpm-step-btn" id="embyBpmMinus5">-5%</button>
-                    <button class="emby-bpm-step-btn" id="embyBpmMinus1">-1%</button>
-                    <button class="emby-bpm-step-btn reset" id="embyBpmReset">Reset (1.0x)</button>
-                    <button class="emby-bpm-step-btn" id="embyBpmPlus1">+1%</button>
-                    <button class="emby-bpm-step-btn" id="embyBpmPlus5">+5%</button>
+                <div class="emby-bpm-step-row">
+                    <button class="emby-bpm-btn-sub" id="embyBpmMinus5" type="button"><i class="md-icon">remove</i> 5%</button>
+                    <button class="emby-bpm-btn-sub" id="embyBpmMinus1" type="button"><i class="md-icon">remove</i> 1%</button>
+                    <button class="emby-bpm-btn-sub reset" id="embyBpmReset" type="button"><i class="md-icon">restart_alt</i> 1.0x</button>
+                    <button class="emby-bpm-btn-sub" id="embyBpmPlus1" type="button"><i class="md-icon">add</i> 1%</button>
+                    <button class="emby-bpm-btn-sub" id="embyBpmPlus5" type="button"><i class="md-icon">add</i> 5%</button>
                 </div>
 
                 <div class="emby-bpm-presets" id="embyBpmPresets"></div>
 
-                <div class="emby-bpm-pitch-section">
+                <div class="emby-bpm-pitch-box">
                     <div class="emby-bpm-pitch-header">
-                        <span>Pitch Lock &amp; Key Transposition</span>
-                        <span class="emby-bpm-pitch-badge" id="embyBpmPitchLockBadge">🔒 Pitch Locked</span>
+                        <div class="emby-bpm-pitch-header-title">
+                            <i class="md-icon">tune</i>
+                            <span>Key &amp; Pitch Lock</span>
+                        </div>
+                        <span class="emby-bpm-pitch-badge" id="embyBpmPitchLockBadge">
+                            <i class="md-icon">lock</i>
+                            <span>Pitch Locked</span>
+                        </span>
                     </div>
-                    <div class="emby-bpm-semitone-controls">
-                        <button class="emby-bpm-step-btn" id="embyBpmSemiDown">-1 Semi</button>
+                    <div class="emby-bpm-pitch-controls">
+                        <button class="emby-bpm-btn-sub" id="embyBpmSemiDown" type="button"><i class="md-icon">remove</i> 1 Semi</button>
                         <span class="emby-bpm-semitone-val" id="embyBpmSemiDisplay">Original Key</span>
-                        <button class="emby-bpm-step-btn" id="embyBpmSemiUp">+1 Semi</button>
+                        <button class="emby-bpm-btn-sub" id="embyBpmSemiUp" type="button"><i class="md-icon">add</i> 1 Semi</button>
                     </div>
                 </div>
 
-                <div class="emby-bpm-tools">
-                    <button class="emby-bpm-tap-btn" id="embyBpmTap">🥁 Tap Beat</button>
-                    <span style="color: #888888;">Target BPM:</span>
-                    <input type="number" class="emby-bpm-target-input" id="embyBpmTargetInput" placeholder="BPM" min="40" max="250" />
+                <div class="emby-bpm-tools-row">
+                    <button class="emby-bpm-tap-btn" id="embyBpmTap" type="button">
+                        <i class="md-icon">touch_app</i>
+                        <span>Tap Beat</span>
+                    </button>
+                    <div class="emby-bpm-target-wrap">
+                        <span>Target BPM:</span>
+                        <input type="number" class="emby-bpm-input" id="embyBpmTargetInput" placeholder="BPM" min="40" max="250" />
+                    </div>
                 </div>
 
                 <div class="emby-bpm-footer">
@@ -477,20 +480,25 @@
             // Render Presets
             const presetsContainer = document.getElementById('embyBpmPresets');
             state.presets.forEach(p => {
-                const pill = document.createElement('button');
-                pill.className = 'emby-bpm-preset-pill';
-                pill.textContent = `${Math.round(p * 100)}%`;
-                pill.addEventListener('click', () => setTempo(p));
-                presetsContainer.appendChild(pill);
+                const chip = document.createElement('button');
+                chip.className = 'emby-bpm-chip';
+                chip.type = 'button';
+                chip.textContent = `${Math.round(p * 100)}%`;
+                chip.addEventListener('click', () => setTempo(p));
+                presetsContainer.appendChild(chip);
             });
         }
     }
 
     function togglePanel() {
         const panel = document.getElementById('embyBpmPanel');
+        const btn = document.getElementById('embyBpmBtn');
         if (!panel) return;
         state.panelOpen = !state.panelOpen;
         panel.style.display = state.panelOpen ? 'flex' : 'none';
+        if (btn) {
+            btn.classList.toggle('active', state.panelOpen);
+        }
         if (state.panelOpen) {
             updateUI();
         }
@@ -502,6 +510,11 @@
             btnLabel.textContent = `${Math.round(state.rate * 100)}%`;
         }
 
+        const btn = document.getElementById('embyBpmBtn');
+        if (btn) {
+            btn.classList.toggle('active', state.panelOpen || state.rate !== 1.0 || state.semitones !== 0);
+        }
+
         const tempoDisplay = document.getElementById('embyBpmTempoDisplay');
         if (tempoDisplay) {
             tempoDisplay.textContent = `${Math.round(state.rate * 100)}%`;
@@ -509,7 +522,7 @@
 
         const multDisplay = document.getElementById('embyBpmMultiplierDisplay');
         if (multDisplay) {
-            multDisplay.textContent = `${state.rate.toFixed(2)}x speed`;
+            multDisplay.textContent = `${state.rate.toFixed(2)}x normal speed`;
         }
 
         const slider = document.getElementById('embyBpmSlider');
@@ -517,15 +530,15 @@
             slider.value = state.rate;
         }
 
-        const effDisplay = document.getElementById('embyBpmEffective');
+        const effVal = document.getElementById('embyBpmEffectiveVal');
         const origDisplay = document.getElementById('embyBpmOriginal');
-        if (effDisplay && origDisplay) {
+        if (effVal && origDisplay) {
             if (state.trackBpm) {
                 const eff = Math.round(state.trackBpm * state.rate * 10) / 10;
-                effDisplay.textContent = `${eff} BPM`;
+                effVal.textContent = `${eff} BPM`;
                 origDisplay.textContent = `Original: ${state.trackBpm} BPM`;
             } else {
-                effDisplay.textContent = `-- BPM`;
+                effVal.textContent = `-- BPM`;
                 origDisplay.textContent = `Tap beat to measure`;
             }
         }
@@ -541,11 +554,10 @@
             }
         }
 
-        // Highlight active preset
-        const pills = document.querySelectorAll('.emby-bpm-preset-pill');
-        pills.forEach(pill => {
-            const val = parseFloat(pill.textContent) / 100;
-            pill.classList.toggle('active', Math.abs(val - state.rate) < 0.005);
+        const chips = document.querySelectorAll('.emby-bpm-chip');
+        chips.forEach(chip => {
+            const val = parseFloat(chip.textContent) / 100;
+            chip.classList.toggle('active', Math.abs(val - state.rate) < 0.005);
         });
     }
 
@@ -570,9 +582,8 @@
         }
     });
 
-    // Initialize UI loop
     setInterval(ensureUI, 1000);
     ensureUI();
 
-    console.log('[EmbyBPM] BPM & Tempo Controller initialized successfully.');
+    console.log('[EmbyBPM] BPM & Tempo Controller initialized with native Emby theme.');
 })();
