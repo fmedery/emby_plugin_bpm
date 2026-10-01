@@ -51,6 +51,30 @@
         return document.querySelector('audio') || document.querySelector('video');
     }
 
+    function isPlayerActive() {
+        const bar = document.querySelector('.nowPlayingBar');
+        if (!bar) return false;
+        if (bar.classList.contains('nowPlayingBar-hidden') || bar.classList.contains('hide')) {
+            return false;
+        }
+        if (bar.offsetParent === null && window.getComputedStyle(bar).display === 'none') {
+            return false;
+        }
+
+        // Check if playback manager has an item or audio is loaded
+        if (window.playbackManager && typeof playbackManager.currentItem === 'function') {
+            const item = playbackManager.currentItem();
+            if (item) return true;
+        }
+
+        const audio = getActiveAudio();
+        if (audio && (audio.currentTime > 0 || !audio.paused)) {
+            return true;
+        }
+
+        return false;
+    }
+
     function applyAudioSettings(audio) {
         if (!audio) return;
 
@@ -73,7 +97,7 @@
     }
 
     // -------------------------------------------------------------
-    // Web Audio Pitch Shifter (Delay Modulation Phase Vocoder)
+    // Web Audio Pitch Shifter
     // -------------------------------------------------------------
     function applyPitchShift(audio) {
         if (state.semitones === 0) {
@@ -195,6 +219,12 @@
     // Track Metadata & BPM Fetching
     // -------------------------------------------------------------
     async function checkCurrentTrack() {
+        if (!isPlayerActive()) {
+            state.currentTrackId = null;
+            state.trackBpm = null;
+            return;
+        }
+
         try {
             let itemId = null;
             if (window.playbackManager && typeof playbackManager.currentItem === 'function') {
@@ -329,47 +359,63 @@
     // UI Creation & Updates
     // -------------------------------------------------------------
     function ensureUI() {
+        const active = isPlayerActive();
         let btn = document.getElementById('embyBpmBtn');
-        const bar = document.querySelector('.nowPlayingBarRight') ||
-                    document.querySelector('.nowPlayingBarCenter') ||
-                    document.querySelector('.nowPlayingBar');
+        let panel = document.getElementById('embyBpmPanel');
+
+        // If player bar is not active, hide everything and NEVER float
+        if (!active) {
+            if (btn) {
+                btn.style.display = 'none';
+            }
+            if (state.panelOpen) {
+                state.panelOpen = false;
+                if (panel) panel.style.display = 'none';
+            }
+            return;
+        }
+
+        const barRight = document.querySelector('.nowPlayingBarRight') ||
+                         document.querySelector('.nowPlayingBarCenter') ||
+                         document.querySelector('.nowPlayingBar');
+
+        if (!barRight) {
+            if (btn) btn.style.display = 'none';
+            return;
+        }
 
         if (!btn) {
             btn = document.createElement('button');
             btn.id = 'embyBpmBtn';
             btn.setAttribute('is', 'paper-icon-button-light');
-            btn.className = 'paper-icon-button-light mediaButton md-icon emby-bpm-player-btn';
+            btn.className = 'nowPlayingBar-hidetv toggleButton mediaButton paper-icon-button-light emby-bpm-player-btn';
             btn.type = 'button';
-            btn.title = 'BPM & Playback Speed';
-            btn.setAttribute('aria-label', 'BPM & Playback Speed');
-            btn.innerHTML = `<i class="md-icon autortl">speed</i><span class="emby-bpm-btn-badge" id="embyBpmBtnLabel">${Math.round(state.rate * 100)}%</span>`;
+            btn.style.padding = '.24em';
+            btn.title = 'Playback Speed & BPM (100%)';
+            btn.setAttribute('aria-label', 'Playback Speed & BPM');
+            btn.innerHTML = `<i style="font-size:inherit;padding:.1em;" class="md-icon toggleButtonIcon" id="embyBpmIcon">speed</i><span class="emby-bpm-badge" id="embyBpmBtnLabel" style="display:none;"></span>`;
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 togglePanel();
             });
         }
 
-        if (bar) {
-            if (btn.parentElement !== bar) {
-                const vol = bar.querySelector('.nowPlayingBarVolumeSliderContainer') || bar.firstChild;
-                if (vol) {
-                    bar.insertBefore(btn, vol);
-                } else {
-                    bar.appendChild(btn);
-                }
-            }
-        } else {
-            if (!btn.parentElement) {
-                btn.style.position = 'fixed';
-                btn.style.bottom = '20px';
-                btn.style.right = '20px';
-                btn.style.zIndex = '99999';
-                document.body.appendChild(btn);
+        btn.style.display = '';
+
+        if (btn.parentElement !== barRight) {
+            const refElem = barRight.querySelector('.toggleShuffleButton') ||
+                            barRight.querySelector('.toggleRepeatButton') ||
+                            barRight.querySelector('.nowPlayingBarVolumeSliderContainer') ||
+                            barRight.firstChild;
+            if (refElem) {
+                barRight.insertBefore(btn, refElem);
+            } else {
+                barRight.appendChild(btn);
             }
         }
 
-        if (!document.getElementById('embyBpmPanel')) {
-            const panel = document.createElement('div');
+        if (!panel) {
+            panel = document.createElement('div');
             panel.id = 'embyBpmPanel';
             panel.className = 'emby-bpm-panel';
             panel.style.display = 'none';
@@ -497,7 +543,7 @@
         state.panelOpen = !state.panelOpen;
         panel.style.display = state.panelOpen ? 'flex' : 'none';
         if (btn) {
-            btn.classList.toggle('active', state.panelOpen);
+            btn.classList.toggle('toggleButton-active', state.panelOpen || state.rate !== 1.0 || state.semitones !== 0);
         }
         if (state.panelOpen) {
             updateUI();
@@ -505,19 +551,35 @@
     }
 
     function updateUI() {
-        const btnLabel = document.getElementById('embyBpmBtnLabel');
-        if (btnLabel) {
-            btnLabel.textContent = `${Math.round(state.rate * 100)}%`;
-        }
+        const isModified = (state.rate !== 1.0 || state.semitones !== 0);
+        const percentStr = `${Math.round(state.rate * 100)}%`;
 
         const btn = document.getElementById('embyBpmBtn');
+        const icon = document.getElementById('embyBpmIcon');
+        const btnLabel = document.getElementById('embyBpmBtnLabel');
+
         if (btn) {
-            btn.classList.toggle('active', state.panelOpen || state.rate !== 1.0 || state.semitones !== 0);
+            btn.title = `Playback Speed & BPM (${percentStr})`;
+            btn.classList.toggle('toggleButton-active', state.panelOpen || isModified);
+            btn.classList.toggle('active', state.panelOpen || isModified);
+        }
+
+        if (icon) {
+            icon.classList.toggle('toggleButtonIcon-active', state.panelOpen || isModified);
+        }
+
+        if (btnLabel) {
+            if (isModified) {
+                btnLabel.textContent = percentStr;
+                btnLabel.style.display = 'inline-block';
+            } else {
+                btnLabel.style.display = 'none';
+            }
         }
 
         const tempoDisplay = document.getElementById('embyBpmTempoDisplay');
         if (tempoDisplay) {
-            tempoDisplay.textContent = `${Math.round(state.rate * 100)}%`;
+            tempoDisplay.textContent = percentStr;
         }
 
         const multDisplay = document.getElementById('embyBpmMultiplierDisplay');
@@ -582,7 +644,7 @@
         }
     });
 
-    setInterval(ensureUI, 1000);
+    setInterval(ensureUI, 800);
     ensureUI();
 
     console.log('[EmbyBPM] BPM & Tempo Controller initialized with native Emby theme.');

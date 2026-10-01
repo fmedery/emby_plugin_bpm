@@ -3,54 +3,48 @@
    100% Native Emby Look & Feel (Material Symbols & Emby Themes)
    ============================================================= */
 
-/* Player Bar Media Button */
+/* Emby Now Playing Bar Speed Button */
 .emby-bpm-player-btn {
-    position: relative;
-    display: inline-flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
+    position: relative !important;
     vertical-align: middle !important;
-    margin: 0 0.2em !important;
-    padding: 0.25em 0.4em !important;
-    min-width: 2.8em !important;
-    height: 3.2em !important;
-    background: transparent !important;
-    border: none !important;
-    border-radius: 0.4em !important;
-    color: inherit !important;
+    margin: 0 !important;
+    padding: 0.24em !important;
+    font-size: 200% !important;
+    line-height: 1 !important;
+    box-sizing: border-box !important;
     cursor: pointer !important;
-    transition: background-color 0.15s ease, color 0.15s ease !important;
-    user-select: none !important;
+}
+
+.emby-bpm-player-btn i.toggleButtonIcon {
+    font-size: inherit !important;
+    padding: 0.1em !important;
+    vertical-align: middle !important;
     line-height: 1 !important;
+    transition: color 0.15s ease !important;
 }
 
-.emby-bpm-player-btn:hover {
-    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.1) !important;
-}
-
-.emby-bpm-player-btn.active,
-.emby-bpm-player-btn:active {
+.emby-bpm-player-btn.toggleButton-active i.toggleButtonIcon,
+.emby-bpm-player-btn.active i.toggleButtonIcon {
     color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%)) !important;
 }
 
-.emby-bpm-player-btn .md-icon {
-    font-size: 1.45em !important;
-    line-height: 1 !important;
-}
-
-.emby-bpm-btn-badge {
-    font-size: 0.62em !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.02em !important;
-    margin-top: 0.2em !important;
-    opacity: 0.85 !important;
+/* Discreet badge for altered speed (hidden at 100%) */
+.emby-bpm-badge {
+    position: absolute !important;
+    bottom: 0.22em !important;
+    right: 0.15em !important;
+    font-size: 0.35em !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+    background-color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%)) !important;
+    color: #000000 !important;
+    border-radius: 0.35em !important;
+    padding: 0.1em 0.32em !important;
+    line-height: 1.1 !important;
+    pointer-events: none !important;
+    font-family: inherit !important;
     font-variant-numeric: tabular-nums !important;
-}
-
-.emby-bpm-player-btn.active .emby-bpm-btn-badge {
-    color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%)) !important;
-    opacity: 1 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Modal Dialog Panel matching Emby native dialogs */
