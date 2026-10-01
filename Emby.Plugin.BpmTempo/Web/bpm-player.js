@@ -386,12 +386,12 @@
             btn = document.createElement('button');
             btn.id = 'embyBpmBtn';
             btn.setAttribute('is', 'paper-icon-button-light');
-            btn.className = 'nowPlayingBar-hidetv mediaButton md-icon autortl paper-icon-button-light emby-bpm-player-btn';
+            btn.className = 'nowPlayingBar-hidetv toggleButton mediaButton paper-icon-button-light emby-bpm-player-btn';
             btn.type = 'button';
             btn.style.padding = '.24em';
             btn.title = 'Playback Speed & BPM (100%)';
             btn.setAttribute('aria-label', 'Playback Speed & BPM');
-            btn.innerHTML = `<i style="font-size:inherit;padding:.1em;background:transparent;" class="md-icon autortl" id="embyBpmIcon">speed</i><span class="emby-bpm-badge" id="embyBpmBtnLabel" style="display:none;"></span>`;
+            btn.innerHTML = `<i style="font-size:inherit;padding:.1em;" class="md-icon toggleButtonIcon" id="embyBpmIcon">speed</i>`;
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 togglePanel();
@@ -562,39 +562,24 @@
     });
 
     function updateUI() {
-        const isModified = (state.rate !== 1.0 || state.semitones !== 0);
+        const isSelected = (state.panelOpen || state.rate !== 1.0 || state.semitones !== 0);
         const percentStr = `${Math.round(state.rate * 100)}%`;
 
         const btn = document.getElementById('embyBpmBtn');
         const icon = document.getElementById('embyBpmIcon');
-        const btnLabel = document.getElementById('embyBpmBtnLabel');
 
         if (btn) {
             btn.title = `Playback Speed & BPM (${percentStr})`;
-            btn.classList.remove('toggleButton-active', 'toggleButton', 'active');
-            if (isModified) {
-                btn.classList.add('bpm-modified');
-            } else {
-                btn.classList.remove('bpm-modified');
-            }
+            btn.classList.toggle('toggleButton-active', isSelected);
         }
 
         if (icon) {
-            icon.classList.remove('toggleButtonIcon-active', 'toggleButtonIcon');
-            // When modified (e.g. 80%) or while panel is actively open, use Emby green accent
-            if (isModified || state.panelOpen) {
-                icon.style.color = 'hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%))';
+            icon.classList.toggle('toggleButtonIcon-active', isSelected);
+            if (isSelected) {
+                // Exactly like the Shuffle button when active: black icon
+                icon.style.color = '#000000';
             } else {
                 icon.style.color = '';
-            }
-        }
-
-        if (btnLabel) {
-            if (isModified) {
-                btnLabel.textContent = percentStr;
-                btnLabel.style.display = 'inline-block';
-            } else {
-                btnLabel.style.display = 'none';
             }
         }
 

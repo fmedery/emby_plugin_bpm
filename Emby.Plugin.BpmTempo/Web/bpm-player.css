@@ -23,35 +23,23 @@
     outline: none !important;
 }
 
-.emby-bpm-player-btn i.md-icon {
+.emby-bpm-player-btn i.toggleButtonIcon {
     font-size: inherit !important;
     padding: 0.1em !important;
     vertical-align: middle !important;
     line-height: 1 !important;
-    background: transparent !important;
-    border-radius: 0 !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    transition: color 0.15s ease !important;
+    border-radius: 0.3em !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
 }
 
-/* Discreet badge for altered speed (hidden at 100%) */
-.emby-bpm-badge {
-    position: absolute !important;
-    bottom: 0.22em !important;
-    right: 0.15em !important;
-    font-size: 0.35em !important;
-    font-weight: 800 !important;
-    letter-spacing: -0.02em !important;
-    background-color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%)) !important;
+/* When selected / active, match Shuffle button: black icon on translucent pill */
+.emby-bpm-player-btn.toggleButton-active i.toggleButtonIcon-active {
     color: #000000 !important;
-    border-radius: 0.35em !important;
-    padding: 0.1em 0.32em !important;
-    line-height: 1.1 !important;
-    pointer-events: none !important;
-    font-family: inherit !important;
-    font-variant-numeric: tabular-nums !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+.emby-bpm-player-btn i.toggleButtonIcon:not(.toggleButtonIcon-active) {
+    color: inherit !important;
+    background: transparent !important;
 }
 
 /* Modal Dialog Panel matching Emby native dialogs */
