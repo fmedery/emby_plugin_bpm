@@ -1,0 +1,7 @@
+bin/
+obj/
+*.user
+*.suo
+.DS_Store
+dist/*.dll
+!dist/emby-bpm-tempo.user.js

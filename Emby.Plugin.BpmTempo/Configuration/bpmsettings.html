@@ -1,0 +1,112 @@
+<div id="bpmSettingsPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+    <div data-role="content">
+        <div class="content-primary">
+            <form id="bpmSettingsForm" style="max-width: 720px;">
+                <div class="sectionTitleContainer flex align-items-center">
+                    <h2 class="sectionTitle">BPM &amp; Tempo Controller Settings</h2>
+                </div>
+                <div class="fieldDescription" style="margin-bottom: 1.5em;">
+                    Configure playback speed adjustment, pitch-preserving tempo shifts, key transposition, and BPM calculation for your music library.
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkEnabled" />
+                        <span>Enable BPM &amp; Tempo Controller</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">
+                        Enables the tempo and BPM controller in the music playback bar and full-screen player.
+                    </div>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkPreservePitch" />
+                        <span>Preserve Pitch (Pitch Lock)</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">
+                        Locks the original pitch when slowing down or speeding up music (prevents chipmunk/deep voice effects).
+                    </div>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkEnablePitchShift" />
+                        <span>Enable Key Transposition (Semitone Pitch Shift)</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">
+                        Allows transposing keys up or down by semitones (±1 to ±6 semitones) independent of tempo.
+                    </div>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkShowBpmCalculator" />
+                        <span>Show BPM Calculator &amp; Tap-Tempo</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">
+                        Displays effective BPM based on track tags and includes an interactive tap-tempo tool.
+                    </div>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkEnableKeyboardShortcuts" />
+                        <span>Enable Keyboard Shortcuts</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">
+                        Use <strong>[</strong> to slow down, <strong>]</strong> to speed up, and <strong>\</strong> to reset to normal speed (100%).
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <label class="inputLabel" for="txtSpeedPresets">Speed Presets (multiplier)</label>
+                    <input type="text" is="emby-input" id="txtSpeedPresets" class="emby-input" />
+                    <div class="fieldDescription">
+                        Comma-separated list of preset multipliers (e.g. 0.50, 0.60, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00).
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <label class="inputLabel" for="txtMinTempo">Minimum Playback Speed</label>
+                    <input type="number" step="0.05" min="0.25" max="1.0" is="emby-input" id="txtMinTempo" class="emby-input" />
+                    <div class="fieldDescription">
+                        Lowest selectable speed multiplier (default: 0.50 = 50% speed).
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <label class="inputLabel" for="txtMaxTempo">Maximum Playback Speed</label>
+                    <input type="number" step="0.05" min="1.0" max="2.5" is="emby-input" id="txtMaxTempo" class="emby-input" />
+                    <div class="fieldDescription">
+                        Highest selectable speed multiplier (default: 1.50 = 150% speed).
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <label class="inputLabel" for="txtStepSize">Step Size (multiplier)</label>
+                    <input type="number" step="0.01" min="0.01" max="0.25" is="emby-input" id="txtStepSize" class="emby-input" />
+                    <div class="fieldDescription">
+                        Speed change increment for +/- buttons and shortcuts (default: 0.05 = 5%).
+                    </div>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input type="checkbox" is="emby-checkbox" id="chkAutoInject" />
+                        <span>Auto-inject into Emby Web Client</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">
+                        Automatically injects the BPM controller script and styles into Emby's index.html on server start.
+                    </div>
+                </div>
+
+                <div style="margin-top: 2em;">
+                    <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                        <span>Save Settings</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
