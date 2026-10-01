@@ -402,8 +402,13 @@
         }
 
         function ensureUI() {
-            if (!document.getElementById('embyBpmBtn')) {
-                const btn = document.createElement('button');
+            let btn = document.getElementById('embyBpmBtn');
+            const bar = document.querySelector('.nowPlayingBarRight') ||
+                        document.querySelector('.nowPlayingBarCenter') ||
+                        document.querySelector('.nowPlayingBar');
+
+            if (!btn) {
+                btn = document.createElement('button');
                 btn.id = 'embyBpmBtn';
                 btn.className = 'emby-bpm-btn';
                 btn.type = 'button';
@@ -413,13 +418,23 @@
                     e.stopPropagation();
                     togglePanel();
                 });
+            }
 
-                const bar = document.querySelector('.nowPlayingBarCenter') ||
-                            document.querySelector('.nowPlayingBarRight') ||
-                            document.querySelector('.nowPlayingBar');
-                if (bar) {
-                    bar.appendChild(btn);
-                } else {
+            if (bar) {
+                if (btn.parentElement !== bar) {
+                    btn.style.position = '';
+                    btn.style.bottom = '';
+                    btn.style.right = '';
+                    btn.style.zIndex = '';
+                    const vol = bar.querySelector('.nowPlayingBarVolumeSliderContainer') || bar.firstChild;
+                    if (vol) {
+                        bar.insertBefore(btn, vol);
+                    } else {
+                        bar.appendChild(btn);
+                    }
+                }
+            } else {
+                if (!btn.parentElement) {
                     btn.style.position = 'fixed';
                     btn.style.bottom = '20px';
                     btn.style.right = '20px';
