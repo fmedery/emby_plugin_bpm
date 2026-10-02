@@ -22,10 +22,7 @@ namespace Emby.Plugin.BpmTempo
         public void Run()
         {
             _logger.Info("BPM & Tempo Controller Plugin initialized.");
-            if (Plugin.Instance != null && Plugin.Instance.Configuration.AutoInjectWebClient)
-            {
-                TryInjectWebClient();
-            }
+            TryInjectWebClient();
         }
 
         private void TryInjectWebClient()

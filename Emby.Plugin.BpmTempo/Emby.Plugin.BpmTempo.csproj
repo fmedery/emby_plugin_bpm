@@ -8,7 +8,7 @@
     <Authors>Frederic</Authors>
     <Company>Emby Community</Company>
     <Product>BPM &amp; Tempo Controller for Emby</Product>
-    <Description>Control playback speed/tempo and BPM without altering pitch, with key transposition and BPM calculation for Emby music libraries.</Description>
+    <Description>Control playback speed/tempo and BPM without altering pitch for Emby music libraries.</Description>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
   </PropertyGroup>
@@ -19,8 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\bpmsettings.html" />
-    <EmbeddedResource Include="Configuration\bpmsettings.js" />
     <EmbeddedResource Include="Web\bpm-player.js" />
     <EmbeddedResource Include="Web\bpm-player.css" />
     <EmbeddedResource Include="thumb.png" />

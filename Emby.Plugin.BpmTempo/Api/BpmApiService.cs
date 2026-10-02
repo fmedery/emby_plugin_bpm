@@ -4,15 +4,9 @@ using System.Reflection;
 using System.Text;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Services;
-using Emby.Plugin.BpmTempo.Configuration;
 
 namespace Emby.Plugin.BpmTempo.Api
 {
-    [Route("/Plugins/BpmTempo/Configuration", "GET", Summary = "Gets the BPM & Tempo plugin configuration")]
-    public class GetBpmConfiguration : IReturn<PluginConfiguration>
-    {
-    }
-
     [Route("/Plugins/BpmTempo/script.js", "GET", Summary = "Gets the client BPM player script")]
     public class GetBpmScript : IReturn<string>
     {
@@ -46,11 +40,6 @@ namespace Emby.Plugin.BpmTempo.Api
             _libraryManager = libraryManager;
         }
 
-        public object Get(GetBpmConfiguration request)
-        {
-            return Plugin.Instance?.Configuration ?? new PluginConfiguration();
-        }
-
         public object Get(GetTrackBpm request)
         {
             var response = new TrackBpmResponse
@@ -66,7 +55,6 @@ namespace Emby.Plugin.BpmTempo.Api
                 {
                     response.Title = item.Name;
                     
-                    // Check item tags for BPM (e.g. "BPM 120", "120 BPM", "BPM: 120")
                     if (item.Tags != null)
                     {
                         foreach (var tag in item.Tags)
@@ -80,7 +68,6 @@ namespace Emby.Plugin.BpmTempo.Api
                         }
                     }
 
-                    // Check Overview / Description if not found in tags
                     if (!response.HasBpm && !string.IsNullOrEmpty(item.Overview))
                     {
                         if (TryParseBpmFromText(item.Overview, out var bpmVal))
