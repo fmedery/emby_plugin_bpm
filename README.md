@@ -1,22 +1,18 @@
 # Emby Music Library BPM & Tempo Controller Plugin
 
-A dedicated **Emby Server Plugin** and **Web Audio Component** designed specifically for your music library. It enables real-time playback speed and BPM adjustments **without altering the audio pitch** (pitch-preserved time-stretching), along with key transposition, tap-tempo beat detection, and BPM calculation.
+A dedicated **Emby Server Plugin** and **Web Audio Component** designed specifically for your music library. It enables real-time playback speed and BPM adjustments **without altering the audio pitch** (pitch-preserved time-stretching), making it ideal for musicians, dancers, transcriptions, and tempo practice.
 
 ---
 
 ## Features
 
-- **Strict Pitch Preservation (Pitch Lock)**: Slow down (down to 50%) or speed up (up to 150%) music tracks while maintaining their original key and pitch using native browser WSOLA audio engines (`HTMLMediaElement.preservesPitch`).
-- **Real-Time BPM Calculation**: Automatically reads embedded ID3/FLAC BPM tags from Emby library items and displays effective tempo in real time (e.g., *Original: 120 BPM → Playing at: 96 BPM at 80%*).
-- **Key Transposition (Semitone Pitch Shift)**: Transpose musical keys up or down (±1 to ±6 semitones) independent of tempo.
-- **Interactive Tap-Tempo**: Tap along with the beat of a song to calculate its BPM on the fly and store it for future playback.
-- **Target BPM Calculator**: Input your desired practice BPM (e.g. 90 BPM) to automatically dial the exact tempo multiplier.
-- **Speed Presets & Fine Tuning**: One-click preset pills (`50%`, `60%`, `70%`, `75%`, `80%`, `85%`, `90%`, `95%`, `100%`) plus `[-5%]`, `[-1%]`, `[Reset]`, `[+1%]`, `[+5%]` buttons.
-- **Keyboard Shortcuts**:
-  - `[` : Slow down by 5%
-  - `]` : Speed up by 5%
-  - `\` : Reset to normal speed (100% / 1.0x)
-- **Seamless Emby UI Integration**: Integrates directly into Emby Web's bottom playback bar and full-screen music player.
+- **Strict Pitch Preservation (Pitch Lock)**: Slow down (down to 50%) or speed up (up to 150%) music tracks while maintaining their original key and pitch using native browser audio engines (`HTMLMediaElement.preservesPitch`).
+- **Real-Time Dynamic BPM Readout**: Automatically reads embedded BPM tags from Emby music tracks and calculates the effective tempo dynamically as you adjust the speed (e.g., *Original: 120 BPM → Playing at: 96 BPM at 80%*).
+- **Streamlined Speed Controls**: Clean speed slider (50% to 150% in 1% steps), quick step buttons (`[-5%]`, `[+5%]`), and instant `[Reset]` back to 100% (1.0x).
+- **Keyboard Shortcuts**: Practice hands-free using keyboard hotkeys (`[` to slow down, `]` to speed up, `\` to reset).
+- **Persistent Speed Memory**: Remembers your preferred playback speed across track changes in the same session.
+- **Native Emby Look & Feel**: Matches Emby's Material Symbols and theme palette with a clean glassmorphic popup that activates in the bottom playback bar whenever audio is playing.
+- **Zero-Config Web Injection**: Self-contained plugin assembly automatically injects its web components into the Emby Web dashboard on server startup.
 
 ---
 
@@ -126,6 +122,25 @@ emby_plugin_bpm/
 
 3. Open Emby Server in your browser. The BPM & Tempo controller will automatically appear in the bottom playback bar whenever music is playing!
 
+#### `build.sh` CLI Reference
+
+| Flag | Description |
+| :--- | :--- |
+| `(none)` | Build the plugin assembly and standalone userscript into `dist/`. |
+| `--copy [PATH]` | Validate environment, compile, and copy `.dll` to target directory (uses `EMBY_PLUGINS_DIR` if omitted). |
+| `--check [PATH]` | Run pre-flight checks only: verifies target directory existence/permissions and checks local Emby status. |
+| `--restart` | Restart the Docker container configured in `EMBY_CONTAINER_NAME` after copying. |
+| `--deploy-docker [NAME]` | Direct copy into a running container via `docker cp` and inject assets into `index.html`. |
+| `-h, --help` | Display command help and usage instructions. |
+
+#### Environment Configuration (`.env`)
+
+| Variable | Description | Default / Example |
+| :--- | :--- | :--- |
+| `EMBY_PLUGINS_DIR` | Host path mapped to Emby's `plugins/` directory. | `/path/to/emby/config/plugins` |
+| `EMBY_CONTAINER_NAME` | Docker container name to reload upon deployment. | `emby` |
+| `EMBY_PORT` | Local host port used for Emby liveness check. | `8096` |
+
 ---
 
 ### Option 2: Standalone Userscript (Zero-Server-Restart)
@@ -136,7 +151,6 @@ If you use Emby in a browser and want to use the controller immediately without 
 2. Create a new script and paste the contents of `dist/emby-bpm-tempo.user.js` (or `emby-bpm-tempo.user.js`).
 3. Save and open your Emby Web client. The BPM controller will automatically load on any music track.
 
-
 ---
 
 ## Keyboard Shortcuts
@@ -145,7 +159,7 @@ If you use Emby in a browser and want to use the controller immediately without 
 | :--- | :--- |
 | <kbd>[</kbd> | Decrease tempo by 5% (step) |
 | <kbd>]</kbd> | Increase tempo by 5% (step) |
-| <kbd>\</kbd> | Reset tempo to 100% (1.0x) and reset key |
+| <kbd>\</kbd> | Reset tempo to 100% (1.0x) |
 
 ---
 
