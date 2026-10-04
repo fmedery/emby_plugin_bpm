@@ -20,12 +20,13 @@ A dedicated **Emby Server Plugin** and **Web Audio Component** designed specific
 
 Before building or deploying, ensure your system has the following installed:
 
-- **[.NET SDK](https://dotnet.microsoft.com/download)**: .NET 6.0, 7.0, 8.0, 9.0, or 10.0 SDK (supports `.NET Standard 2.0` compilation).
+- **[.NET SDK](https://dotnet.microsoft.com/download)**: .NET SDK (6.0 through 10.0+ supported; targets `.NET Standard 2.0`).
   - Verify with: `dotnet --version`
   - macOS: `brew install dotnet-sdk`
-  - Ubuntu / Debian: `sudo apt-get install -y dotnet-sdk-8.0`
-  - Fedora: `sudo dnf install dotnet-sdk-8.0`
+  - Ubuntu / Debian: `sudo apt-get install -y dotnet-sdk-10.0` *(or `dotnet-sdk-8.0`, depending on your Ubuntu LTS / Debian release)*
+  - Fedora / RHEL: `sudo dnf install dotnet-sdk-10.0` *(or `dotnet-sdk-8.0`)*
   - Arch Linux: `sudo pacman -S dotnet-sdk`
+  - *Note: The exact package version may vary depending on your Linux distribution and release.*
 - **Bash Shell**: Linux, macOS, or WSL / Git Bash on Windows.
 - **Git**: To clone the repository and push updates.
 - *(Optional)* **Docker**: If you run Emby Server as a Docker container.
