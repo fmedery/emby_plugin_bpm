@@ -17,7 +17,49 @@ A dedicated **Emby Server Plugin** and **Web Audio Component** designed specific
   - `]` : Speed up by 5%
   - `\` : Reset to normal speed (100% / 1.0x)
 - **Seamless Emby UI Integration**: Integrates directly into Emby Web's bottom playback bar and full-screen music player.
-- **Emby Admin Dashboard Settings**: Custom settings page inside **Server Dashboard > Plugins > BPM & Tempo Controller**.
+
+---
+
+## Prerequisites
+
+Before building or deploying, ensure your system has the following installed:
+
+- **[.NET SDK](https://dotnet.microsoft.com/download)**: .NET 6.0, 7.0, 8.0, 9.0, or 10.0 SDK (supports `.NET Standard 2.0` compilation).
+  - Verify with: `dotnet --version`
+  - macOS: `brew install dotnet-sdk`
+  - Ubuntu / Debian: `sudo apt-get install -y dotnet-sdk-8.0`
+  - Fedora: `sudo dnf install dotnet-sdk-8.0`
+  - Arch Linux: `sudo pacman -S dotnet-sdk`
+- **Bash Shell**: Linux, macOS, or WSL / Git Bash on Windows.
+- **Git**: To clone the repository and push updates.
+- *(Optional)* **Docker**: If you run Emby Server as a Docker container.
+- *(Optional)* **curl** / **nc** / **pgrep**: Used by `build.sh` for pre-flight environment checks.
+
+---
+
+## Build Instructions
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/fmedery/emby_plugin_bpm.git
+   cd emby_plugin_bpm
+   ```
+
+2. **Make the build script executable**:
+   ```bash
+   chmod +x build.sh
+   ```
+
+3. **Build the plugin**:
+   ```bash
+   ./build.sh
+   ```
+   *(Or build directly using the .NET CLI without `build.sh`: `dotnet build Emby.Plugin.BpmTempo/Emby.Plugin.BpmTempo.csproj -c Release`)*
+
+4. **Build Outputs**:
+   All artifacts are generated in the `dist/` directory:
+   - `dist/Emby.Plugin.BpmTempo.dll` — Pre-compiled Emby Server plugin with embedded Web UI assets.
+   - `dist/emby-bpm-tempo.user.js` — Standalone userscript for browser-only usage (no server install required).
 
 ---
 
@@ -27,20 +69,17 @@ A dedicated **Emby Server Plugin** and **Web Audio Component** designed specific
 emby_plugin_bpm/
 ├── Emby.Plugin.BpmTempo/
 │   ├── Emby.Plugin.BpmTempo.csproj       # .NET Standard 2.0 project file
-│   ├── Plugin.cs                          # BasePlugin implementation with IHasWebPages & IHasThumbImage
+│   ├── Plugin.cs                          # BasePlugin implementation with IHasThumbImage
 │   ├── ServerEntryPoint.cs                # Server startup lifecycle & web client injector
 │   ├── thumb.png                          # Plugin icon
-│   ├── Configuration/
-│   │   ├── PluginConfiguration.cs        # Config data model (presets, pitch lock, shortcuts)
-│   │   ├── bpmsettings.html              # Emby dashboard configuration UI
-│   │   └── bpmsettings.js                # Settings page controller
 │   ├── Api/
 │   │   └── BpmApiService.cs               # REST API endpoints (/Plugins/BpmTempo/...)
 │   └── Web/
 │       ├── bpm-player.js                  # Client audio engine & UI widget
 │       └── bpm-player.css                 # Dark-mode glassmorphic styling
 ├── emby-bpm-tempo.user.js                 # Standalone Userscript for Tampermonkey / Violentmonkey
-├── build.sh                               # Automated build and docker deployment script
+├── build.sh                               # Automated build, check, and deployment script
+├── .env.example                           # Template for deployment configuration
 └── dist/
     ├── Emby.Plugin.BpmTempo.dll           # Compiled plugin assembly ready for Emby
     └── emby-bpm-tempo.user.js
@@ -97,19 +136,6 @@ If you use Emby in a browser and want to use the controller immediately without 
 2. Create a new script and paste the contents of `dist/emby-bpm-tempo.user.js` (or `emby-bpm-tempo.user.js`).
 3. Save and open your Emby Web client. The BPM controller will automatically load on any music track.
 
----
-
-## Configuration
-
-In the Emby Web dashboard, navigate to **Settings > Plugins > BPM & Tempo Controller**:
-
-* **Enable BPM & Tempo Controller**: Master switch for the playback controller.
-* **Preserve Pitch (Pitch Lock)**: Keep enabled so slowing down tracks maintains original pitch without chipmunk or deep-voice distortion.
-* **Enable Key Transposition**: Allows shifting pitch by semitones (±1 to ±6 st).
-* **Show BPM Calculator & Tap-Tempo**: Enables effective BPM readouts and tap-tempo tool.
-* **Enable Keyboard Shortcuts**: Toggle hotkeys (`[`, `]`, `\`).
-* **Speed Presets**: Customize comma-separated speed values.
-* **Auto-inject into Web Client**: Automatically injects script into Emby's `index.html` on server startup.
 
 ---
 
