@@ -15,7 +15,6 @@
         rate: 1.0,
         minRate: 0.50,
         maxRate: 1.50,
-        presets: [0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00],
         trackBpm: null,
         currentTrackId: null,
         panelOpen: false
@@ -274,8 +273,6 @@
                     </div>
                 </div>
 
-                <div class="emby-bpm-presets" id="embyBpmPresets"></div>
-
                 <div class="emby-bpm-quick-actions">
                     <button class="emby-bpm-btn-sub" id="embyBpmMinus5" type="button"><i class="md-icon">remove</i> 5%</button>
                     <button class="emby-bpm-btn-sub reset" id="embyBpmReset" type="button"><i class="md-icon">restart_alt</i> Reset</button>
@@ -299,17 +296,6 @@
             document.getElementById('embyBpmMinus5').addEventListener('click', () => adjustTempo(-0.05));
             document.getElementById('embyBpmReset').addEventListener('click', resetTempo);
             document.getElementById('embyBpmPlus5').addEventListener('click', () => adjustTempo(0.05));
-
-            // Render Presets
-            const presetsContainer = document.getElementById('embyBpmPresets');
-            state.presets.forEach(p => {
-                const chip = document.createElement('button');
-                chip.className = 'emby-bpm-chip';
-                chip.type = 'button';
-                chip.textContent = `${Math.round(p * 100)}%`;
-                chip.addEventListener('click', () => setTempo(p));
-                presetsContainer.appendChild(chip);
-            });
         }
     }
 
@@ -325,6 +311,11 @@
 
         panel.style.display = state.panelOpen ? 'flex' : 'none';
         updateUI();
+
+        if (!state.panelOpen) {
+            const btn = document.getElementById('embyBpmBtn');
+            if (btn) btn.blur();
+        }
     }
 
     // Close panel when clicking outside
@@ -338,7 +329,7 @@
     });
 
     function updateUI() {
-        const isSelected = (state.panelOpen || state.rate !== 1.0);
+        const isSelected = !!state.panelOpen;
         const percentStr = `${Math.round(state.rate * 100)}%`;
 
         const btn = document.getElementById('embyBpmBtn');
@@ -377,12 +368,6 @@
         if (slider && Math.abs(parseFloat(slider.value) - state.rate) > 0.005) {
             slider.value = state.rate;
         }
-
-        const chips = document.querySelectorAll('.emby-bpm-chip');
-        chips.forEach(chip => {
-            const val = parseFloat(chip.textContent) / 100;
-            chip.classList.toggle('active', Math.abs(val - state.rate) < 0.005);
-        });
     }
 
     // -------------------------------------------------------------

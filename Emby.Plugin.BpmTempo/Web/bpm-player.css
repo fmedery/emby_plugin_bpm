@@ -203,41 +203,6 @@
     padding: 0 0.2em;
 }
 
-/* Presets Chips */
-.emby-bpm-presets {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35em;
-    justify-content: center;
-}
-
-.emby-bpm-chip {
-    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.07);
-    border: 1px solid hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.1);
-    border-radius: 0.8em;
-    padding: 0.35em 0.65em;
-    font-size: 0.78em;
-    font-weight: 600;
-    color: inherit;
-    opacity: 0.85;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    font-family: inherit;
-    line-height: 1;
-}
-
-.emby-bpm-chip:hover {
-    opacity: 1;
-    background-color: hsla(var(--theme-text-color-hue, 0), var(--theme-text-color-saturation, 0%), var(--theme-text-color-lightness, 100%), 0.16);
-}
-
-.emby-bpm-chip.active {
-    background-color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
-    border-color: hsl(var(--theme-primary-color-hue, 116), var(--theme-primary-color-saturation, 42%), var(--theme-primary-color-lightness, 50%));
-    color: #ffffff;
-    opacity: 1;
-}
-
 /* Quick Step Actions */
 .emby-bpm-quick-actions {
     display: flex;

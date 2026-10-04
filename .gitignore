@@ -5,3 +5,5 @@ obj/
 .DS_Store
 dist/*.dll
 !dist/emby-bpm-tempo.user.js
+.env
+.env.local

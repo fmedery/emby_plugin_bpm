@@ -52,19 +52,40 @@ emby_plugin_bpm/
 
 ### Option 1: Emby Server Plugin (Recommended)
 
-1. Build the plugin:
+1. **Configure deployment path (optional but recommended)**:
+   Copy `.env.example` to `.env` and set your Emby plugins path (and optional container name for automatic reload):
    ```bash
-   ./build.sh
+   cp .env.example .env
    ```
-2. Copy `dist/Emby.Plugin.BpmTempo.dll` to your Emby Server's `plugins` directory:
-   * **If running Emby in Docker:**
+   Example `.env`:
+   ```bash
+   EMBY_PLUGINS_DIR=/path/to/emby/config/plugins
+   EMBY_CONTAINER_NAME=emby
+   ```
+
+2. **Build and deploy**:
+   * **Auto-copy using `.env` target**:
+     ```bash
+     ./build.sh --copy
+     ```
+   * **Auto-copy specifying target path directly**:
+     ```bash
+     ./build.sh --copy /path/to/emby/config/plugins
+     ```
+   * **Direct container copy (`docker cp` + reload)**:
      ```bash
      ./build.sh --deploy-docker emby
      ```
-     *(or manually: `docker cp dist/Emby.Plugin.BpmTempo.dll emby:/config/plugins/ && docker restart emby`)*
-   * **If running bare-metal / NAS:**
-     Copy `dist/Emby.Plugin.BpmTempo.dll` into your Emby `programdata/plugins` or `/var/lib/emby/plugins` folder and restart the server.
-3. Open Emby Server in your browser. The BPM controller will automatically appear in the bottom audio player bar whenever music is playing!
+   * **Check environment only** (without compiling):
+     ```bash
+     ./build.sh --check
+     ```
+   * **Standard build only** (output stored in `dist/`):
+     ```bash
+     ./build.sh
+     ```
+
+3. Open Emby Server in your browser. The BPM & Tempo controller will automatically appear in the bottom playback bar whenever music is playing!
 
 ---
 
